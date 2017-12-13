@@ -1,0 +1,46 @@
+---
+- hosts: all
+
+  pre_tasks:
+    - name: Reset cluster
+      shell: kubeadm reset
+      become: true
+
+  tasks:
+    - name: Generate token
+      shell: kubeadm token generate
+      register: token
+      run_once: true
+
+
+- hosts: master
+  tasks:
+    - name: Initialise master node
+      shell: kubeadm init --apiserver-advertise-address={{ master_api_ip }} --token {{ token.stdout }}
+      become: true
+
+    - name: "Make directory"
+      file:
+        path: "{{ansible_env.HOME}}/.kube"
+        state: directory
+
+    - name: "Copy config"
+      copy:
+        src: "/etc/kubernetes/admin.conf"
+        dest: "{{ansible_env.HOME}}/.kube/config"
+        owner: "{{ansible_user}}"
+        group: "{{ansible_user}}"
+        remote_src: yes
+      become: true
+
+- hosts: worker
+  tasks:
+    - name: Join worker node
+      shell: kubeadm join --token {{ token.stdout }} {{ master_api_ip }}:6443
+      become: true
+
+- hosts: master
+  tasks:
+    - name: Install networking plugin
+      shell: "kubectl apply -f \"https://cloud.weave.works/k8s/net?k8s-version=$(kubectl version | base64 | tr -d '\n')\""
+      run_once: true

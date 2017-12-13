@@ -17,6 +17,8 @@ sudo apt-get update
 
 echo "--------------- Installing Docker"
 sudo apt-get install -y docker-ce=17.03.2~ce-0~ubuntu-xenial
+
+echo "-------- Changing user permissions"
 sudo usermod -a -G docker $USER
 
 echo "--------------- Installing kubeadm, kubelet and kubectl"

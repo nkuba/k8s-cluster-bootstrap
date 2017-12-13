@@ -1,0 +1,14 @@
+# IntelliJ project files
+.idea
+*.iml
+out
+gen
+
+# Vagrant files
+.vagrant/
+
+# Log files
+*.log
+
+# Ansible files
+*.retry

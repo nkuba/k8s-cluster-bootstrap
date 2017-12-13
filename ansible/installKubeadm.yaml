@@ -1,0 +1,17 @@
+---
+- hosts: kubeadm
+  become: true
+
+  tasks:
+    - name: Add Kubernetes repository key
+      apt_key: url=https://packages.cloud.google.com/apt/doc/apt-key.gpg
+
+    - name: Add Kubernetes repository
+      apt_repository: repo='deb http://apt.kubernetes.io/ kubernetes-xenial main' state=present
+
+    - name: Install kubelet, kubeadm, kubectl
+      apt: name={{item}} state=installed
+      with_items:
+      - kubelet
+      - kubeadm
+      - kubectl
