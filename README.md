@@ -2,13 +2,16 @@
 Kubernetes training
 
 ## Bootstrapping a cluster with kubeadm
-Bootstrap 3 VMs
+### Prerequisites
+You will need following tools on your host machine:
+- [ ] [Vagrant](https://www.vagrantup.com/docs/installation/)
+- [ ] [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
+
+### Bootstrap 3 VMs with Vagrant
 ```bash
-cd vagrant
-vagrant up
+cd vagrant/ && vagrant up
 ```
-Run script to set up hosts via Ansible
+### Run script to set up hosts with Ansible
 ```bash
-cd ../ansible
-./setUp1m2w.sh
+cd ansible/ && ./setUp1m2w.sh
 ```
