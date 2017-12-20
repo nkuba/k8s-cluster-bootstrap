@@ -14,6 +14,6 @@ IN PROGRESS...
 ```
 
 ## Credits
-- Kubernetes The Hard Way Tutorial - @kelseyhightower/kubernetes-the-hard-way
+- [Kubernetes The Hard Way Tutorial](https://github.com/kelseyhightower/kubernetes-the-hard-way) by @kelseyhightower
 - Kubernetes Documentation - [Creating a Custom Cluster from Scratch](https://kubernetes.io/docs/getting-started-guides/scratch)
 
