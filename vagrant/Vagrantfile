@@ -1,26 +1,21 @@
+# Configuration
+CLUSTER_SIZE=4
+SSH_PRIVATE_KEY="~/.ssh/id_rsa"
+SSH_PUBLIC_KEY="~/.ssh/id_rsa.pub"
+
 Vagrant.configure("2") do |config|
-  config.vm.box = "ubuntu/xenial64"
+    config.vm.box = "ubuntu/xenial64"
 
-# Workaround for Bug [https://bugs.launchpad.net/cloud-images/+bug/1569237]
-  config.ssh.insert_key = true
-  config.ssh.private_key_path = ["~/.ssh/id_rsa"]
-  config.vm.provision "file", source: "~/.ssh/id_rsa.pub", destination: "~/.ssh/authorized_keys"
+    # Workaround for Bug [https://bugs.launchpad.net/cloud-images/+bug/1569237]
+    config.ssh.insert_key = true
+    config.ssh.private_key_path = [SSH_PRIVATE_KEY]
+    config.vm.provision "file", source: SSH_PUBLIC_KEY, destination: "~/.ssh/authorized_keys"
 
-  config.vm.define "node1" do |node|
-    node.vm.hostname = "node1"
+    (1..CLUSTER_SIZE).each do |i|
+        config.vm.define "node#{i}" do |node|
+            node.vm.hostname = "node#{i}"
 
-    node.vm.network "private_network", ip: "192.168.10.21"
-  end
-
-  config.vm.define "node2" do |node|
-    node.vm.hostname = "node2"
-
-    node.vm.network "private_network", ip: "192.168.10.22"
-  end
-  
-  config.vm.define "node3" do |node|
-    node.vm.hostname = "node3"
-
-    node.vm.network "private_network", ip: "192.168.10.23"
-  end
+            node.vm.network "private_network", ip: "192.168.10.2#{i}"
+        end
+    end
 end
