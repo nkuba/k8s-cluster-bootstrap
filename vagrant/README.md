@@ -2,8 +2,7 @@
 Vagrant will handle Virtual Machines for the cluster. The script uses _Ubuntu Xenial 64-bit_ image.
 
 ## Prerequisites
-You will need following tools to be preinstalled on your host machine:
-- [ ] [Vagrant](https://www.vagrantup.com/docs/installation/)
+- [ ] [Vagrant](https://www.vagrantup.com/docs/installation/) installed on host machine
 - [ ] Generated SSH keys on host machine `ssh-keygen`
 
 ## Configuration
@@ -22,6 +21,11 @@ where {i} is subsequent number of VM from 1 to _CLUSTER_SIZE_
 To start VMs execute command:
 ```bash
 vagrant up
+```
+
+To start specific VMs provide their names to the command:
+```bash
+vagrant up node1 node2
 ```
 
 ## Check status of Virtual Machines
@@ -47,6 +51,17 @@ For more information about a specific VM, run `vagrant status NAME`.
 To connect to a running VM via SSH run:
 ```bash
 vagrant ssh node1
+```
+
+## Clean Up Virtual Machines
+To tear down Virtual Machines run:
+```bash
+vagrant destroy
+```
+
+To destroy specific VMs provide their names to the command:
+```bash
+vagrant destroy node1 node2
 ```
 
 ## More Vagrant Commands

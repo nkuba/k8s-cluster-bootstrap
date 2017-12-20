@@ -6,6 +6,7 @@
 [worker]
 192.168.10.22   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
 192.168.10.23   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+192.168.10.24   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
 
 [docker:children]
 master

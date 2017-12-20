@@ -12,7 +12,6 @@
       register: token
       run_once: true
 
-
 - hosts: master
   tasks:
     - name: Initialise master node
@@ -36,7 +35,7 @@
 - hosts: worker
   tasks:
     - name: Join worker node
-      shell: kubeadm join --token {{ token.stdout }} {{ master_api_ip }}:6443
+      shell: kubeadm join --token {{ token.stdout }} {{ master_api_ip }}:6443 --discovery-token-unsafe-skip-ca-verification
       become: true
 
 - hosts: master

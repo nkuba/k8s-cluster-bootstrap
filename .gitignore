@@ -12,3 +12,5 @@ gen
 
 # Ansible files
 *.retry
+
+tmp/
