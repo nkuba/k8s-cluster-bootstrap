@@ -4,19 +4,20 @@ Vagrant will handle Virtual Machines for the cluster. The script uses _Ubuntu Xe
 ## Prerequisites
 You will need following tools to be preinstalled on your host machine:
 - [ ] [Vagrant](https://www.vagrantup.com/docs/installation/)
-- [ ] Generated SSH keys `ssh-keygen`
+- [ ] Generated SSH keys on host machine `ssh-keygen`
 
 ## Configuration
 In [Vagrantfile](Vagrantfile) set variables:
 - _CLUSTER_SIZE_ - number of VMs to create (default _4_)
-- _SSH_PRIVATE_KEY_ - path to SSH private key (default _~/.ssh/id_rsa_)
-- _SSH_PUBLIC_KEY_ - path to SSH public key (default _~/.ssh/id_rsa.pub_)
+- _SSH_PRIVATE_KEY_ - path to host SSH private key (default _~/.ssh/id_rsa_)
+- _SSH_PUBLIC_KEY_ - path to host SSH public key (default _~/.ssh/id_rsa.pub_)
 
 ## Bootstrap Virtual Machines
 Each VM  will be configured in following way:
 - [hostname](https://www.vagrantup.com/docs/vagrantfile/machine_settings.html#available-settings) set to _node{i}_, e.g. node1
 - [private network IP address](https://www.vagrantup.com/docs/networking/private_network.html#static-ip) set to 192.168.10.2{i}, e.g. 192.168.10.21
-where {i} is subsequent number of VM from 1 to _$CLUSTER_SIZE_
+
+where {i} is subsequent number of VM from 1 to _CLUSTER_SIZE_
 
 To start VMs execute command:
 ```bash
@@ -38,7 +39,8 @@ node2                     running (virtualbox)
 node3                     running (virtualbox)
 node4                     running (virtualbox)
 
-This environment represents multiple VMs. The VMs are all listed above with their current state. For more information about a specific VM, run `vagrant status NAME`.
+This environment represents multiple VMs. The VMs are all listed above with their current state. 
+For more information about a specific VM, run `vagrant status NAME`.
 ```
 
 ## SSH to a Virtual Machine
@@ -48,4 +50,4 @@ vagrant ssh node1
 ```
 
 ## More Vagrant Commands
-For more Vagrant commands visit: [Vagrant Docs: Command-Line Interface](https://www.vagrantup.com/docs/cli/)
+For more Vagrant commands visit Vagrant Docs [Command-Line Interface](https://www.vagrantup.com/docs/cli/)
