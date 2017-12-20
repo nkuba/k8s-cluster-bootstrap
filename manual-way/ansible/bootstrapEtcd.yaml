@@ -1,0 +1,52 @@
+---
+- hosts: etcd
+
+  vars:
+    certGenDir: "{{ lookup('env','CERTS_GEN_DIR') }}"
+
+  tasks:
+#    - stat: path=/usr/local/bin/etcd
+#      register: etcd_exists
+
+    - name: "Get etcd"
+      unarchive:
+        src: https://github.com/coreos/etcd/releases/download/v3.2.11/etcd-v3.2.11-linux-amd64.tar.gz
+        dest: .
+        remote_src: yes
+#      when: etcd_exists.stat.exists == false
+
+    - name: "Copy etcd to bin"
+      copy: src="etcd-v3.2.11-linux-amd64/{{ item }}" dest="/usr/local/bin/" remote_src="yes" mode="+x"
+      with_items:
+        - "etcd"
+        - "etcdctl"
+      become: true
+
+    - name: Create directories
+      file: path={{ item }} state=directory
+      with_items:
+        - "/etc/etcd"
+        - "/var/lib/etcd"
+      become: true
+
+    - name: "Copy certificates to etcd"
+      copy: src={{ item }} dest="/etc/etcd/"
+      with_items:
+        - "{{ certGenDir }}/kubernetes-key.pem"
+        - "{{ certGenDir }}/kubernetes.pem"
+        - "{{ certGenDir }}/ca.pem"
+      become: true
+
+    - name: "Generate etcd.service file"
+      template:
+        src: templates/etcd.service.j2
+        dest: /etc/systemd/system/etcd.service
+      become: true
+
+    - name: "Start etcd service"
+      systemd:
+        state: started
+        daemon_reload: yes
+        enabled: yes
+        name: etcd
+      become: true

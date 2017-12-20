@@ -1,0 +1,100 @@
+---
+- hosts: worker
+
+  vars:
+    certGenDir: "{{ lookup('env','CERTS_GEN_DIR') }}"
+    kubeconfigDir: "{{ lookup('env','KUBECONFIG_DIR') }}"
+
+  tasks:
+    - name: Install socat
+      apt: name=socat state=installed update_cache=yes
+      become: yes
+
+    - name: "Install Kubernetes Controller Binaries"
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/{{ item }}
+        dest: /usr/local/bin/
+        mode: "+x"
+      become: true
+      with_items:
+        - "kubectl"
+        - "kube-proxy"
+        - "kubelet"
+
+    - name: Create directories
+      file: path={{ item }} state=directory
+      with_items:
+        - "/opt/cni/bin/"
+        - "/etc/cni/net.d/"
+        - "/var/lib/kube-proxy"
+      become: true
+
+    - name: "Get CNI plugins"
+      unarchive:
+        src: https://github.com/containernetworking/plugins/releases/download/v0.6.0/cni-plugins-amd64-v0.6.0.tgz
+        dest: /opt/cni/bin/
+        remote_src: yes
+      become: true
+
+    - name: "Get CRI containerd"
+      unarchive:
+        src: https://github.com/kubernetes-incubator/cri-containerd/releases/download/v1.0.0-beta.0/cri-containerd-1.0.0-beta.0.linux-amd64.tar.gz
+        dest: /
+        remote_src: yes
+      become: true
+
+    - name: "Generate 10-bridge.conf file"
+      template:
+        src: templates/10-bridge.conf.j2
+        dest: /etc/cni/net.d/10-bridge.conf
+      become: true
+
+    - name: "Generate 99-loopback.conf file"
+      template:
+        src: templates/99-loopback.conf.j2
+        dest: /etc/cni/net.d/99-loopback.conf
+      become: true
+
+    - name: "Copy certificates to workers"
+      copy: src={{ item }} dest="/var/lib/kubelet/"
+      with_items:
+        - "{{ certGenDir }}/{{ inventory_hostname }}.pem"
+        - "{{ certGenDir }}/{{ inventory_hostname }}-key.pem"
+      become: true
+
+    - name: "Copy kubeconfig to workers"
+      copy: src="{{ kubeconfigDir }}/{{ inventory_hostname }}.kubeconfig" dest="/var/lib/kubelet/kubeconfig"
+      become: true
+
+    - name: "Copy ca to workers"
+      copy: src="{{ certGenDir }}/ca.pem" dest="/var/lib/kubernetes/"
+      become: true
+
+    - name: "Copy kube-proxy.kubeconfig to workers"
+      copy: src="{{ kubeconfigDir }}/kube-proxy.kubeconfig" dest="/var/lib/kube-proxy/kubeconfig"
+      become: true
+
+    - name: "Generate kubelet.service file"
+      template:
+        src: templates/kubelet.service.j2
+        dest: /etc/systemd/system/kubelet.service
+      become: true
+
+    - name: "Generate kube-proxy.service file"
+      template:
+        src: templates/kube-proxy.service.j2
+        dest: /etc/systemd/system/kube-proxy.service
+      become: true
+
+    - name: "Start systemd services"
+      systemd:
+        state: started
+        daemon_reload: yes
+        enabled: yes
+        name: "{{ item }}"
+      with_items:
+        - "containerd"
+        - "cri-containerd"
+        - "kubelet"
+        - "kube-proxy"
+      become: true

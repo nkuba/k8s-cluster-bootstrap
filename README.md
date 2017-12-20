@@ -1,17 +1,7 @@
-# k8s-training
-Kubernetes training
+# Kubernetes Training Repository
+This repository contains code used to Kubernetes training.
 
-## Bootstrapping a cluster with kubeadm
-### Prerequisites
-You will need following tools on your host machine:
-- [ ] [Vagrant](https://www.vagrantup.com/docs/installation/)
-- [ ] [Ansible](http://docs.ansible.com/ansible/latest/intro_installation.html)
-
-### Bootstrap 3 VMs with Vagrant
-```bash
-cd vagrant/ && vagrant up
-```
-### Run script to set up hosts with Ansible
-```bash
-cd ansible/ && ./setUp1m2w.sh
-```
+## Bootstrap a Kubernetes Cluster
+Following ways of bootsrapping a Kubernetes Cluster are covered:
+- [Kubeadm](kubeadm-way) - quick and simple solution to run a Cluster with separate Master and multiple Workers on different Virtual Machines
+- [Manual](manual-way) - complex way of running a Cluster from scratch with multiple Masters and Workers across different Virtual Machines

@@ -1,0 +1,91 @@
+#!/bin/bash
+ANSIBLE_INVENTORY="ansible/inventory/hosts"
+PRIVATE_KEY="~/.ssh/id_rsa"
+
+echo "Configure Ansible"
+export ANSIBLE_HOST_KEY_CHECKING=False
+
+# 1. DOCKER
+echo "Install Docker"
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/installDocker.yaml
+
+
+#wget https://dl.k8s.io/v1.8.5/kubernetes.tar.gz
+#tar -zxvf kubernetes.tar.gz
+
+#./kubernetes/cluster/get-kube-binaries.sh
+
+
+
+# TODO: RUN KUBERNETES WITH KUBEADM AND COPY CONFIGURATION FOR SYSTEMD
+#Tip: One possible starting point is to setup a cluster using an existing Getting Started Guide. After getting a cluster running,
+# you can then copy the init.d scripts or systemd unit files from that cluster, and then modify them for use on your custom cluster.
+
+#etcd
+export ETCD_VERSION=3.0.17
+export ETCD_IMAGE=gcr.io/google-containers/etcd:$ETCD_VERSION
+
+docker run --detach \
+    --name=etcd \
+    --net=host \
+    -p 8080:8080 \
+    $ETCD_IMAGE \
+    etcd \
+        --data-dir=/var/etcd/data
+
+export HYPERKUBE_VERSION=1.8.5
+export HYPERKUBE_IMAGE=gcr.io/google-containers/hyperkube:$HYPERKUBE_VERSION
+
+#docker run -d \
+#    --net=host \
+#    gcr.io/google_containers/etcd:2.0.9 \
+#    /usr/local/bin/etcd \
+#        --addr=127.0.0.1:4001 \
+#        --bind-addr=0.0.0.0:4001 \
+#        --data-dir=/var/etcd/data
+
+#kubelet - all
+#????
+#curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+#sudo apt-get-repository "deb http://apt.kubernetes.io/ kubernetes-xenial main"
+#sudo apt update
+#sudo apt install -y kubelet
+
+docker run --detach \
+    --net=container:etcd \
+    --name=kubelet \
+    gcr.io/google_containers/hyperkube:v1.8.5 \
+    /kubelet \
+        --kube-config=~/kubelet.conf
+
+
+
+#kube-proxy - all
+????
+
+#kube-apiserver - master
+docker run --detach \
+    --net=container:etcd \
+    --name=apiserver \
+    $HYPERKUBE_IMAGE \
+    /apiserver \
+        --etcd-servers=http://192.168.10.21:2379 \
+        --service-cluster-ip-range=10.0.0.1/24 \
+        --insecure-bind-address=0.0.0.0 \
+        --insecure-port=8080 \
+        --admission-control=AlwaysAdmit
+
+#kube-controller-manager - master
+docker run --detach \
+    --net=container:etcd \
+    --name=controller-manager \
+    $HYPERKUBE_IMAGE \
+    /controller-manager \
+        --master=192.168.10.21:8080
+
+#kube-scheduler - master
+
+
+
+
+

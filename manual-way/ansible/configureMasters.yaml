@@ -1,0 +1,107 @@
+---
+- hosts: master
+
+  vars:
+    certGenDir: "{{ lookup('env','CERTS_GEN_DIR') }}"
+    kubeconfigDir: "{{ lookup('env','KUBECONFIG_DIR') }}"
+
+  tasks:
+#    - stat: path=/usr/local/bin/kubectl
+#      register: kubectl_exists
+
+    - name: "Install Kubernetes Controller Binaries"
+      get_url:
+        url: https://storage.googleapis.com/kubernetes-release/release/v1.9.0/bin/linux/amd64/{{ item }}
+        dest: /usr/local/bin/
+        mode: "+x"
+      become: true
+      with_items:
+        - "kubectl"
+        - "kube-apiserver"
+        - "kube-controller-manager"
+        - "kube-scheduler"
+#      when: kubectl_exists.stat.exists == false
+
+    - name: Create directories
+      file: path={{ item }} state=directory
+      with_items:
+        - "/var/lib/kubernetes/"
+      become: true
+
+    - name: "Copy certificates and config to kubernetes dir"
+      copy: src={{ item }} dest="/var/lib/kubernetes/"
+      with_items:
+        - "{{ certGenDir }}/ca.pem"
+        - "{{ certGenDir }}/ca-key.pem"
+        - "{{ certGenDir }}/kubernetes-key.pem"
+        - "{{ certGenDir }}/kubernetes.pem"
+        - "{{ kubeconfigDir }}/encryption-config.yaml"
+      become: true
+
+    - name: "Generate systemd service files"
+      template:
+        src: templates/{{ item }}.service.j2
+        dest: /etc/systemd/system/{{ item }}.service
+      with_items:
+        - "kube-apiserver"
+        - "kube-scheduler"
+        - "kube-controller-manager"
+      become: true
+
+    - name: "Start systemd services"
+      systemd:
+        state: started
+        daemon_reload: yes
+        enabled: yes
+        name: "{{ item }}"
+      with_items:
+        - "kube-apiserver"
+        - "kube-scheduler"
+        - "kube-controller-manager"
+      become: true
+
+    - name: "Configure RBAC for Kubelet authorization - part 1"
+      shell:
+       cmd: |
+        cat <<EOF | kubectl apply -f -
+        apiVersion: rbac.authorization.k8s.io/v1beta1
+        kind: ClusterRole
+        metadata:
+          annotations:
+            rbac.authorization.kubernetes.io/autoupdate: "true"
+          labels:
+            kubernetes.io/bootstrapping: rbac-defaults
+          name: system:kube-apiserver-to-kubelet
+        rules:
+          - apiGroups:
+              - ""
+            resources:
+              - nodes/proxy
+              - nodes/stats
+              - nodes/log
+              - nodes/spec
+              - nodes/metrics
+            verbs:
+              - "*"
+        EOF
+      run_once: true
+
+    - name: "Configure RBAC for Kubelet authorization - part 2"
+      shell:
+       cmd: |
+        cat <<EOF | kubectl apply -f -
+        apiVersion: rbac.authorization.k8s.io/v1beta1
+        kind: ClusterRoleBinding
+        metadata:
+          name: system:kube-apiserver
+          namespace: ""
+        roleRef:
+          apiGroup: rbac.authorization.k8s.io
+          kind: ClusterRole
+          name: system:kube-apiserver-to-kubelet
+        subjects:
+          - apiGroup: rbac.authorization.k8s.io
+            kind: User
+            name: kubernetes
+        EOF
+      run_once: true
