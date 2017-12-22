@@ -27,9 +27,6 @@ NODES_NUMBER=4
 # INSTALL CFSSL TOOLS
 $SCRIPTS_DIR/install_cfssl.sh
 
-# INSTALL KUBECTL
-$SCRIPTS_DIR/install_kubectl.sh
-
 # GENERATE CERTIFICATES
 $SCRIPTS_DIR/generate_certificates.sh $NODES_NUMBER
 
@@ -53,8 +50,11 @@ resources:
       - identity: {}
 EOF
 
-## COPY CERTS TO NODES
-ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/copyCerts.yaml
+# INSTALL KUBECTL
+$SCRIPTS_DIR/install_kubectl.sh
+
+### COPY CERTS TO NODES
+#ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/copyCerts.yaml
 
 # BOOTSTRAP ETCD
 echo "# BOOTSTRAP ETCD"
@@ -65,7 +65,17 @@ echo "# CONFIGURE MASTERS"
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureMasters.yaml
 
 # CONFIGURE WORKERS
+echo "# CONFIGURE WORKERS"
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureWorkers.yaml
 
 # CONFIGURE ADMIN CLIENT
-$SCRIPTS_DIR/configure_admin.sh
+echo "# CONFIGURE ADMIN CLIENT"
+$SCRIPTS_DIR/configure_admin_client.sh
+
+# CONFIGURE NETWORK ROUTES
+# TODO: CHECK THIS AND REMOVE - USE NETWORK OVERLAY
+echo "# CONFIGURE NETWORK ROUTES"
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configurePodNetworkRoute.yaml
+
+# CONFIGURE KUBE-DNS
+kubectl create -f https://storage.googleapis.com/kubernetes-the-hard-way/kube-dns.yaml

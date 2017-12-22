@@ -5,6 +5,7 @@ SSH_PUBLIC_KEY="~/.ssh/id_rsa.pub"
 
 Vagrant.configure("2") do |config|
     config.vm.box = "ubuntu/xenial64"
+    config.vm.box_version = "20171212.0.0"
 
     # Workaround for Bug [https://bugs.launchpad.net/cloud-images/+bug/1569237]
     config.ssh.insert_key = true

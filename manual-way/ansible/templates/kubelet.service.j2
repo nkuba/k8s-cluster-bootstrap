@@ -13,6 +13,7 @@ ExecStart=/usr/local/bin/kubelet \
   --cloud-provider="" \
   --cluster-dns=10.32.0.10 \
   --cluster-domain=cluster.local \
+  --node-ip={{ ansible_host }} \
   --container-runtime=remote \
   --container-runtime-endpoint=unix:///var/run/cri-containerd.sock \
   --image-pull-progress-deadline=2m \
