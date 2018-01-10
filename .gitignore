@@ -13,4 +13,6 @@ gen
 # Ansible files
 *.retry
 
+# Genereted files
 tmp/
+node*-csr.json
