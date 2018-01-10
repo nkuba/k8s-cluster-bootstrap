@@ -1,0 +1,20 @@
+apiVersion: extensions/v1beta1
+kind: DaemonSet
+metadata:
+  name: busy-daemon
+spec:
+  template:
+    metadata:
+      labels:
+        name: busy-daemon
+    spec:
+      hostNetwork: true
+      hostPID: true
+      containers:
+        - name: busybox
+          image: busybox
+          command:
+            - sleep
+            - "3600"
+          securityContext:
+            privileged: true
