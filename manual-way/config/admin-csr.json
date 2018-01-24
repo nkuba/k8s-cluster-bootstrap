@@ -6,11 +6,10 @@
   },
   "names": [
     {
-      "C": "US",
-      "L": "Portland",
+      "C": "PL",
+      "L": "Krakow",
       "O": "system:masters",
-      "OU": "Kubernetes The Hard Way",
-      "ST": "Oregon"
+      "OU": "Kubernetes The Hard Way"
     }
   ]
 }

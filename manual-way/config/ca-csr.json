@@ -1,16 +1,15 @@
 {
-  "CN": "Kubernetes",
+  "CN": "example.com",
   "key": {
     "algo": "rsa",
     "size": 2048
   },
   "names": [
     {
-      "C": "US",
-      "L": "Portland",
-      "O": "Kubernetes",
-      "OU": "CA",
-      "ST": "Oregon"
+      "C": "PL",
+      "L": "Krakow",
+      "O": "JNC Certificate Authority",
+      "OU": "RnD Department"
     }
   ]
 }
