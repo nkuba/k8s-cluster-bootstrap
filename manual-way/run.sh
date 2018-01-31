@@ -1,24 +1,20 @@
 #!/bin/bash
 # TODO: Modify approach to run Kubernetes tools as containers:
 # https://kubernetes.io/docs/getting-started-guides/scratch/#configuring-and-installing-base-software-on-nodes
-
 # TODO: Modify to Python script
 
 export KUBERNETES_PUBLIC_ADDRESS="192.168.10.21"
 export KUBERNETES_CLUSTER="ManualCluster"
 
 mkdir -p tmp/certs/
+mkdir -p tmp/config/
+
 export CERTS_CONFIG_DIR="$(realpath config/)"
 export CERTS_GEN_DIR="$(realpath tmp/certs/)"
-
 export SCRIPTS_DIR="$(realpath scripts/)"
-
-mkdir -p tmp/config/
 export KUBECONFIG_DIR="$(realpath tmp/config/)"
 
-echo "Configure Ansible"
 export ANSIBLE_HOST_KEY_CHECKING=False
-
 ANSIBLE_INVENTORY="$(realpath ansible/inventory/hosts)"
 PRIVATE_KEY="~/.ssh/id_rsa"
 
@@ -53,12 +49,11 @@ EOF
 # INSTALL KUBECTL
 $SCRIPTS_DIR/install_kubectl.sh
 
-### COPY CERTS TO NODES
-#ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/copyCerts.yaml
-
 # BOOTSTRAP ETCD
 echo "# BOOTSTRAP ETCD"
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/bootstrapEtcd.yaml
+
+sleep 30
 
 # CONFIGURE MASTERS
 echo "# CONFIGURE MASTERS"
@@ -72,10 +67,12 @@ ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/config
 echo "# CONFIGURE ADMIN CLIENT"
 $SCRIPTS_DIR/configure_admin_client.sh
 
-# CONFIGURE NETWORK ROUTES
+echo "# CONFIGURE NETWORK"
 # TODO: CHECK THIS AND REMOVE - USE NETWORK OVERLAY
-echo "# CONFIGURE NETWORK ROUTES"
-ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configurePodNetworkRoute.yaml
+#ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configurePodNetworkRoute.yaml
+kubectl apply -f kube-flannel-vagrant.yml
+
+sleep 30
 
 # CONFIGURE KUBE-DNS
 kubectl create -f https://storage.googleapis.com/kubernetes-the-hard-way/kube-dns.yaml
