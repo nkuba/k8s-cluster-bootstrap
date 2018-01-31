@@ -38,22 +38,22 @@
 
     - name: "Get CRI containerd"
       unarchive:
-        src: https://github.com/kubernetes-incubator/cri-containerd/releases/download/v1.0.0-beta.0/cri-containerd-1.0.0-beta.0.linux-amd64.tar.gz
+        src: https://github.com/containerd/containerd/releases/download/v1.0.1/containerd-1.0.1.linux-amd64.tar.gz
         dest: /
         remote_src: yes
       become: true
 
-    - name: "Generate 10-bridge.conf file"
-      template:
-        src: templates/10-bridge.conf.j2
-        dest: /etc/cni/net.d/10-bridge.conf
-      become: true
-
-    - name: "Generate 99-loopback.conf file"
-      template:
-        src: templates/99-loopback.conf.j2
-        dest: /etc/cni/net.d/99-loopback.conf
-      become: true
+#    - name: "Generate 10-bridge.conf file"
+#      template:
+#        src: templates/10-bridge.conf.j2
+#        dest: /etc/cni/net.d/10-bridge.conf
+#      become: true
+#
+#    - name: "Generate 99-loopback.conf file"
+#      template:
+#        src: templates/99-loopback.conf.j2
+#        dest: /etc/cni/net.d/99-loopback.conf
+#      become: true
 
     - name: "Copy certificates to workers"
       copy: src={{ item }} dest="/var/lib/kubelet/"

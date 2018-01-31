@@ -17,4 +17,5 @@ master
 worker
 
 [all:vars]
-master_api_ip=192.168.10.21
+MASTER_API_IP=192.168.10.21
+POD_NETWORK_CIDR=10.244.0.0/16

@@ -61,7 +61,7 @@
       become: true
 
     - name: Wait for services to start
-      wait_for: timeout=10
+      wait_for: timeout=30
       delegate_to: localhost
 
     - name: "Configure RBAC for Kubelet authorization - part 1"

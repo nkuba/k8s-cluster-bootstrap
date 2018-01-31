@@ -17,6 +17,12 @@ Vagrant.configure("2") do |config|
             node.vm.hostname = "node#{i}"
 
             node.vm.network "private_network", ip: "192.168.10.2#{i}"
+
+            node.vm.provision "shell",
+                inline: "echo '192.168.10.21 node1
+192.168.10.22 node2
+192.168.10.23 node3
+192.168.10.24 node4' >> /etc/hosts"
         end
     end
 end
