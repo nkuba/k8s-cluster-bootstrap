@@ -1,33 +1,31 @@
 #!/bin/bash
-# TODO: Modify approach to run Kubernetes tools as containers:
-# https://kubernetes.io/docs/getting-started-guides/scratch/#configuring-and-installing-base-software-on-nodes
-
+# TODO: Modify approach to run Kubernetes tools as containers https://kubernetes.io/docs/getting-started-guides/scratch/#configuring-and-installing-base-software-on-nodes
 # TODO: Modify to Python script
+# TODO: Download binaries once and distribute across nodes. Don't download them multiple times
 
 export KUBERNETES_PUBLIC_ADDRESS="192.168.10.21"
 export KUBERNETES_CLUSTER="ManualCluster"
+export NODES_NUMBER=4
 
+export ANSIBLE_HOST_KEY_CHECKING=False
+export ANSIBLE_INVENTORY="$(realpath ansible/inventory/hosts)"
+export PRIVATE_KEY="~/.ssh/id_rsa"
+
+
+rm -rf tmp/
 mkdir -p tmp/certs/
-export CERTS_CONFIG_DIR="$(realpath config/)"
+export CONFIG_DIR="$(realpath config/)"
 export CERTS_GEN_DIR="$(realpath tmp/certs/)"
-
 export SCRIPTS_DIR="$(realpath scripts/)"
 
 mkdir -p tmp/config/
 export KUBECONFIG_DIR="$(realpath tmp/config/)"
 
-echo "Configure Ansible"
-export ANSIBLE_HOST_KEY_CHECKING=False
-
-ANSIBLE_INVENTORY="$(realpath ansible/inventory/hosts)"
-PRIVATE_KEY="~/.ssh/id_rsa"
-
-NODES_NUMBER=4
-
 # INSTALL CFSSL TOOLS
-$SCRIPTS_DIR/install_cfssl.sh
+#$SCRIPTS_DIR/install_cfssl.sh
 
 # GENERATE CERTIFICATES
+# https://kubernetes.io/docs/concepts/cluster-administration/certificates/#cfssl
 $SCRIPTS_DIR/generate_certificates.sh $NODES_NUMBER
 
 # GENERATE CONFIG FILES
@@ -51,22 +49,26 @@ resources:
 EOF
 
 # INSTALL KUBECTL
-$SCRIPTS_DIR/install_kubectl.sh
-
-### COPY CERTS TO NODES
-#ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/copyCerts.yaml
+#$SCRIPTS_DIR/install_kubectl.sh
 
 # BOOTSTRAP ETCD
 echo "# BOOTSTRAP ETCD"
-ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/bootstrapEtcd.yaml
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureEtcd.yaml
+
+sleep 30
 
 # CONFIGURE MASTERS
 echo "# CONFIGURE MASTERS"
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureMasters.yaml
 
-# CONFIGURE WORKERS
-echo "# CONFIGURE WORKERS"
-ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureWorkers.yaml
+# CONFIGURE SECURITY
+echo "# CONFIGURE MASTERS"
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureSecurity.yaml
+
+# CONFIGURE NODES
+echo "# CONFIGURE NODES"
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureContainerd.yaml
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureNodes.yaml
 
 # CONFIGURE ADMIN CLIENT
 echo "# CONFIGURE ADMIN CLIENT"
@@ -74,8 +76,11 @@ $SCRIPTS_DIR/configure_admin_client.sh
 
 # CONFIGURE NETWORK ROUTES
 # TODO: CHECK THIS AND REMOVE - USE NETWORK OVERLAY
-echo "# CONFIGURE NETWORK ROUTES"
-ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configurePodNetworkRoute.yaml
+#echo "# CONFIGURE NETWORKING"
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureNetworking.yaml
+kubectl apply -f $CONFIG_DIR/kube-flannel-for-vagrant.yaml
+
+sleep 30
 
 # CONFIGURE KUBE-DNS
 kubectl create -f https://storage.googleapis.com/kubernetes-the-hard-way/kube-dns.yaml

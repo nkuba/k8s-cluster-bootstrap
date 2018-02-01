@@ -8,7 +8,7 @@ do
 NODE=node$i
 
     echo "Generate cert for node: $NODE"
-    cat > $CERTS_CONFIG_DIR/$NODE-csr.json <<EOF
+    cat > $CONFIG_DIR/$NODE-csr.json <<EOF
 {
   "CN": "system:node:$NODE",
   "key": {
@@ -30,10 +30,10 @@ EOF
     cfssl gencert \
       -ca=$CERTS_GEN_DIR/ca.pem \
       -ca-key=$CERTS_GEN_DIR/ca-key.pem \
-      -config=$CERTS_CONFIG_DIR/ca-config.json \
+      -config=$CONFIG_DIR/ca-config.json \
       -hostname=$NODE,192.168.10.2$i \
       -profile=kubernetes \
-      $CERTS_CONFIG_DIR/$NODE-csr.json | cfssljson -bare $NODE
+      $CONFIG_DIR/$NODE-csr.json | cfssljson -bare $NODE
 
-#rm $CERTS_CONFIG_DIR/node$i-csr.json
+#rm $CONFIG_DIR/node$i-csr.json
 done

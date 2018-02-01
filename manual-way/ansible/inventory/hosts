@@ -1,16 +1,12 @@
 # Ansible inventory file
 
 [master]
-node1   ansible_host=192.168.10.21  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
-node2   ansible_host=192.168.10.22  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+node1   ansible_host=192.168.10.21  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=192.168.121.0/24
+node2   ansible_host=192.168.10.22  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=192.168.122.0/24
 
-[worker]
+[node]
 node3   ansible_host=192.168.10.23  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=192.168.123.0/24
 node4   ansible_host=192.168.10.24  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=192.168.124.0/24
-
-[docker:children]
-master
-worker
 
 [etcd:children]
 master

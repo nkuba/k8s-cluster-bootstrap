@@ -10,7 +10,7 @@ IN PROGRESS...
 
 ## Run script to set up Kubernetes Cluster
 ```bash
-./run.sh
+./setUpCluster.sh
 ```
 
 ## Credits
