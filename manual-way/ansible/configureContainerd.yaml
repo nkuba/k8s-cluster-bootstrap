@@ -1,0 +1,43 @@
+---
+- hosts: node
+
+  tasks:
+    - name: Install dependencies
+      apt: name={{ item }} state=installed update_cache=yes
+      become: yes
+      with_items:
+        - "libseccomp2"
+#        - "libapparmor"
+#        - "btrfs-tools"
+#        - "nsenter"
+
+    #  The socat binary enables support for the kubectl port-forward command.
+    - name: Install socat
+      apt: name=socat state=installed update_cache=yes
+      become: yes
+
+
+    - name: "Get CRI containerd"
+      unarchive:
+        src: https://github.com/containerd/cri-containerd/releases/download/v1.0.0-beta.1/cri-containerd-1.0.0-beta.1.linux-amd64.tar.gz
+        dest: /
+        remote_src: yes
+      become: true
+
+    - name: Create directories
+      file: path={{ item }} state=directory
+      with_items:
+        - "/opt/cni/bin/"
+        - "/etc/cni/net.d/"
+      become: true
+
+    - name: "Start systemd services"
+      systemd:
+        state: restarted
+        daemon_reload: yes
+        enabled: yes
+        name: "{{ item }}"
+      with_items:
+        - "containerd"
+        - "cri-containerd"
+      become: true

@@ -1,0 +1,7 @@
+apiVersion: "training.lfs458.com/v1"
+kind: CronTab
+metadata:
+    name: new-cron-object
+spec:
+    cronSpec: "*/5 * * * *"
+    image: some-cron-image
