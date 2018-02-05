@@ -12,4 +12,4 @@ ansible-playbook -i $INVENTORY --private-key $PRIVATE_KEY ansible/installKuberne
 echo "# Bootstrap cluster"
 ansible-playbook -i $INVENTORY --private-key $PRIVATE_KEY ansible/bootstrapCluster.yaml
 
-scp ubuntu@192.168.10.21:/home/ubuntu/.kube/config .
+scp ubuntu@10.240.0.21:/home/ubuntu/.kube/config .

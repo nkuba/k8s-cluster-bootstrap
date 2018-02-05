@@ -1,12 +1,12 @@
 # Ansible inventory file
 
 [master]
-192.168.10.21   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+10.240.0.21   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
 
 [worker]
-192.168.10.22   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
-192.168.10.23   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
-192.168.10.24   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+10.240.0.22   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+10.240.0.23   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
+10.240.0.24   ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3
 
 [docker:children]
 master
@@ -17,5 +17,6 @@ master
 worker
 
 [all:vars]
-MASTER_API_IP=192.168.10.21
+MASTER_API_IP=10.240.0.21
 POD_NETWORK_CIDR=10.244.0.0/16
+SERVICE_CIDR=10.96.0.0/12
