@@ -14,7 +14,7 @@ In [Vagrantfile](Vagrantfile) set variables:
 ## Bootstrap Virtual Machines
 Each VM  will be configured in following way:
 - [hostname](https://www.vagrantup.com/docs/vagrantfile/machine_settings.html#available-settings) set to _node{i}_, e.g. node1
-- [private network IP address](https://www.vagrantup.com/docs/networking/private_network.html#static-ip) set to 192.168.10.2{i}, e.g. 192.168.10.21
+- [private network IP address](https://www.vagrantup.com/docs/networking/private_network.html#static-ip) set to 10.240.0.2{i}, e.g. 10.240.0.21
 
 where {i} is subsequent number of VM from 1 to _CLUSTER_SIZE_
 

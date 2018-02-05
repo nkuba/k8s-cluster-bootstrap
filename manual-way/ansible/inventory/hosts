@@ -1,15 +1,15 @@
 # Ansible inventory file
 
 [master]
-node1   ansible_host=192.168.10.21  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=192.168.121.0/24
-node2   ansible_host=192.168.10.22  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=192.168.122.0/24
+node1   ansible_host=10.240.0.21  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=10.200.21.0/24
+node2   ansible_host=10.240.0.22  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=10.200.22.0/24
 
 [node]
-node3   ansible_host=192.168.10.23  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=10.244.23.0/24
-node4   ansible_host=192.168.10.24  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=10.244.24.0/24
+node3   ansible_host=10.240.0.23  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=10.200.23.0/24
+node4   ansible_host=10.240.0.24  ansible_user=ubuntu ansible_python_interpreter=/usr/bin/python3 pod_cidr=10.200.24.0/24
 
 [etcd:children]
 master
 
 [all:vars]
-master_api_ip=192.168.10.21
+master_api_ip=10.240.0.21

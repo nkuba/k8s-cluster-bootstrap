@@ -3,7 +3,7 @@
 # TODO: Modify to Python script
 # TODO: Download binaries once and distribute across nodes. Don't download them multiple times
 
-export KUBERNETES_PUBLIC_ADDRESS="192.168.10.21"
+export KUBERNETES_PUBLIC_ADDRESS="10.240.0.21"
 export KUBERNETES_CLUSTER="ManualCluster"
 export NODES_NUMBER=4
 

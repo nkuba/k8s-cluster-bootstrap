@@ -31,7 +31,7 @@ EOF
       -ca=$CERTS_GEN_DIR/ca.pem \
       -ca-key=$CERTS_GEN_DIR/ca-key.pem \
       -config=$CONFIG_DIR/ca-config.json \
-      -hostname=$NODE,192.168.10.2$i \
+      -hostname=$NODE,10.240.0.2$i \
       -profile=kubernetes \
       $CONFIG_DIR/$NODE-csr.json | cfssljson -bare $NODE
 
