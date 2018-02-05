@@ -59,6 +59,7 @@ sleep 30
 sleep 30
 
 # CONFIGURE MASTERS
+# TODO: Follow instruction to replicate masters: https://kubernetes.io/docs/admin/high-availability/building/
 echo "# CONFIGURE MASTERS"
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureMasters.yaml
 
@@ -67,6 +68,7 @@ echo "# CONFIGURE MASTERS"
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureSecurity.yaml
 
 # CONFIGURE NODES
+# TODO: Run Master as a Node with appropriate "master" label node-role.kubernetes.io/master="": https://kubernetes.io/docs/getting-started-guides/scratch/
 echo "# CONFIGURE NODES"
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureContainerd.yaml
 ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureNodes.yaml
