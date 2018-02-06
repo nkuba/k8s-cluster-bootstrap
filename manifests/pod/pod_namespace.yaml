@@ -1,7 +1,7 @@
 apiVersion: v1
 kind: Pod
 metadata:
-    name: redis
+    name: busybox
     namespace: linuxcon
 spec:
     containers:
@@ -10,4 +10,3 @@ spec:
         command:
           - sleep
           - "3600"
-

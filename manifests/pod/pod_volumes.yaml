@@ -7,6 +7,7 @@ metadata:
 spec:
   containers:
   - image: busybox
+    name: busy
     command:
       - sleep
       - "3600"
@@ -14,8 +15,8 @@ spec:
     - mountPath: /busy
       name: test
     imagePullPolicy: IfNotPresent
-    name: busy
   - image: busybox
+    name: box
     command:
       - sleep
       - "3600"
@@ -23,7 +24,6 @@ spec:
     - mountPath: /box
       name: test
     imagePullPolicy: IfNotPresent
-    name: box
   restartPolicy: Always
   volumes:
   - name: test

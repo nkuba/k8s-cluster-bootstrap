@@ -1,0 +1,10 @@
+---
+- hosts: master
+  tasks:
+    - name: Fetch configuration files from master node
+      fetch:
+        src: /home/ubuntu/.kube/config
+        dest: ../tmp/
+        flat: yes
+      become: true
+      run_once: true
