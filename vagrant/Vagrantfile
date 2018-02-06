@@ -1,5 +1,5 @@
 # Configuration
-CLUSTER_SIZE=2
+CLUSTER_SIZE=4
 SSH_PRIVATE_KEY="~/.ssh/id_rsa"
 SSH_PUBLIC_KEY="~/.ssh/id_rsa.pub"
 
