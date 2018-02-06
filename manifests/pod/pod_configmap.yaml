@@ -1,18 +1,18 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: configmap-test
+  name: configmapPod
 spec:
   containers:
   - image: busybox
+    name: busy
     command:
       - sleep
       - "3600"
     volumeMounts:
     - mountPath: /config
-      name: map
-    name: busy
+      name: mapVolume
   volumes:
-    - name: map
+    - name: mapVolume
       configMap:
         name: map

@@ -1,15 +1,16 @@
 #!/bin/bash
-INVENTORY="ansible/inventory/hosts"
-PRIVATE_KEY="~/.ssh/id_rsa"
 export ANSIBLE_HOST_KEY_CHECKING=False
+export ANSIBLE_INVENTORY="ansible/inventory/hosts"
+export PRIVATE_KEY="~/.ssh/id_rsa"
 
 echo "# Install Docker"
-ansible-playbook -i $INVENTORY --private-key $PRIVATE_KEY ansible/installDocker.yaml
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/installDocker.yaml
 
 echo "# Install kubeadm"
-ansible-playbook -i $INVENTORY --private-key $PRIVATE_KEY ansible/installKubernetes.yaml
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/installKubernetes.yaml
 
 echo "# Bootstrap cluster"
-ansible-playbook -i $INVENTORY --private-key $PRIVATE_KEY ansible/bootstrapCluster.yaml
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/bootstrapCluster.yaml
 
-scp ubuntu@10.240.0.21:/home/ubuntu/.kube/config .
+echo "# Configure local client"
+ansible-playbook -i $ANSIBLE_INVENTORY --private-key $PRIVATE_KEY ansible/configureClient.yaml
