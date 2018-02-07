@@ -4,15 +4,31 @@ metadata:
   name: configmapPod
 spec:
   containers:
-  - image: busybox
-    name: busy
-    command:
-      - sleep
-      - "3600"
+  - name: test-container
+    image: k8s.gcr.io/busybox
+# Use ConfigMap-defined environment variables in Pod commands
+    command: [ "/bin/sh", "-c", "echo $(SPECIAL_LEVEL_KEY) $(SPECIAL_TYPE_KEY)" ]
+# Define a Pod environment variable with data from a single ConfigMap
+    env:
+    - name: SPECIAL_LEVEL_KEY
+      valueFrom:
+        configMapKeyRef:
+          name: special-config
+          key: special.how
+# Configure all key-value pairs in a ConfigMap as Pod environment variables
+    envFrom:
+    - configMapRef:
+        name: special-config
+# Populate a Volume with data stored in a ConfigMap
     volumeMounts:
-    - mountPath: /config
-      name: mapVolume
+    - name: config-volume
+      mountPath: /etc/config
   volumes:
-    - name: mapVolume
+    - name: config-volume
       configMap:
-        name: map
+        # Provide the name of the ConfigMap containing the files you want to add to the container
+        name: special-config
+        # Add ConfigMap data to a specific path in the Volume
+        items:
+          - key: log_level
+            path: log_level

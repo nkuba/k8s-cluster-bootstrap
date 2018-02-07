@@ -1,30 +1,15 @@
 apiVersion: v1
 kind: Pod
 metadata:
-  name: vol
-  labels:
-    app: vol
+  name: test-pd
 spec:
   containers:
-  - image: busybox
-    name: busy
-    command:
-      - sleep
-      - "3600"
+  - image: k8s.gcr.io/test-webserver
+    name: test-container
     volumeMounts:
-    - mountPath: /busy
-      name: test
-    imagePullPolicy: IfNotPresent
-  - image: busybox
-    name: box
-    command:
-      - sleep
-      - "3600"
-    volumeMounts:
-    - mountPath: /box
-      name: test
-    imagePullPolicy: IfNotPresent
-  restartPolicy: Always
+    - mountPath: /cache
+      name: cache-volume
+      subPath: mysql # sub-path inside the referenced volume instead of its root
   volumes:
-  - name: test
+  - name: cache-volume
     emptyDir: {}

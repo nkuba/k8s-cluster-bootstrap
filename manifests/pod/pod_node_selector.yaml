@@ -28,3 +28,4 @@ spec:
               - "1000000"
     nodeSelector:
        status: other
+#       kubernetes.io/hostname: node3
