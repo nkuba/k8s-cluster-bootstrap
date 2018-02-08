@@ -10,3 +10,14 @@ As nodes are removed from the cluster, those Pods are garbage collected.
 ## Manifests
 
 [daemonset.yaml](daemonset.yaml)
+
+## Rolling Updates
+[Documentation](https://kubernetes.io/docs/tasks/manage-daemon/update-daemon-set/)
+
+```bash
+# Check if RollingUpdate strategy is set
+kubectl get ds/<DS_NAME> -o go-template='{{.spec.updateStrategy.type}}{{"\n"}}'
+
+# Update container image
+kubectl set image ds/<DS_NAME> <CONTAINER_NAME>=<IMAGE_NAME>:<IMAGE_VERSION>
+```
