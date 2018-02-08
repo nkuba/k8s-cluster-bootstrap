@@ -6,6 +6,7 @@ and [API Reference v1.9](https://kubernetes.io/docs/reference/generated/kubernet
 
 ## Cheat Sheet
 Based on official [kubectl Cheat Sheet](https://kubernetes.io/docs/reference/kubectl/cheatsheet/)
+and [kubectl Commands Reference](https://kubernetes.io/docs/reference/generated/kubectl/kubectl-commands)
 
 ### Autocompletion
 ```bash
