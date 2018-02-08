@@ -25,6 +25,7 @@ metadata:
   name: access-nginx
   namespace: default
 spec:
+  # Select pods to which the policy applies. If empty select all pods in the namespace
   podSelector:
     matchLabels:
       run: nginx
@@ -51,5 +52,6 @@ spec:
     - protocol: TCP
       port: 5978
 ```
-
+More:
+* [Default Network Policies](https://kubernetes.io/docs/concepts/services-networking/network-policies/#default-policies)
 
