@@ -10,9 +10,13 @@ You describe a desired state in a Deployment object, and the Deployment controll
 
 ## Kubectl commands
 
-`kubectl create --record -f  <FILE_PATH>`
+```bash
+kubectl create --record -f  <FILE_PATH>
 
-Append --record to this command to record the current command in the annotations of the created or updated resource.
+kubectl run <POD_NAME> --image=<IMAGE> --port=<PORT>
+```
+
+Append `--record` to command to record the current command in the annotations of the created or updated resource.
 
 ### Updating a Deployment
 
