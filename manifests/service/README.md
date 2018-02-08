@@ -11,11 +11,14 @@ The set of Pods targeted by a Service is (usually) determined by a Label Selecto
 
 ## Kubectl commands
 
-`kubectl get service`
+```bash
+kubectl get service
 
-`kubectl expose deployment/<NAME>`
+kubectl expose deployment/<NAME>
 
-`kubectl​ ​expose​ ​deployment/<NAME​> ​--port=<PORT>​ ​--type=NodePort`
+kubectl expose deployment/<NAME> --port=<PORT> --target-port=<CONTAINER_PORT> --type=NodePort
+
+```
 
 ## Manifests
 
