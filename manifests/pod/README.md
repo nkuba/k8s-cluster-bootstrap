@@ -7,10 +7,16 @@
 ## Kubectl commands
 
 ```bash
-kubectl get pods --show-labels
+kubectl label pod my-pod new-label=awesome                      # Add a Label
+kubectl annotate pod my-pod icon-url=http://goo.gl/XXBTWq       # Add an annotation
 
-kubectl label pods my-pod new-label=awesome                      # Add a Label
-kubectl annotate pods my-pod icon-url=http://goo.gl/XXBTWq       # Add an annotation
+kubectl get pods --show-labels
+kubectl get pods -LKEY
+
+kubectl port-forward POD_NAME LOCAL_PORT:POD_PORT
+
+kubectl exec -ti POD_NAME -- /bin/sh
+kubectl run -it --rm --restart=Never busybox --image=busybox sh
 ```
 
 * Get all pods for node `<NODE_NAME>`
