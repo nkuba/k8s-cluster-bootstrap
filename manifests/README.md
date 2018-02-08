@@ -86,7 +86,9 @@ kubectl get nodes --show-labels
 kubectl get nodes -o jsonpath="{$.items[*].metadata.labels}"
 
 # Taint
-kubectl taint node NODE_NAME LABEL_KEY=LABEL_VALUE:NoSchedule
+kubectl taint node <NODE_NAME> <LABEL_KEY>=LABEL_VALUE:NoSchedule   # taint node
+kubectl taint node <NODE_NAME> <LABEL_KEY>:NoSchedule-              # remove taint
+kubectl get node <NODE_NAME> -o jsonpath='{.spec.taints}'                 # get node taints
 
 
 # Drain and Uncordon
