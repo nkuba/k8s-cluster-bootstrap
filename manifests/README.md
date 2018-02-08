@@ -69,7 +69,7 @@ kubectl get nodes -o jsonpath='{.items[*].status.addresses[?(@.type=="ExternalIP
 # List Names of Pods that belong to Particular Deployment
 # "jq" command useful for transformations that are too complex for jsonpath, it can be found at https://stedolan.github.io/jq/
 sel=$(kubectl get deployment nginx-deployment -o=json | jq -j '.spec.selector.matchLabels | to_entries | map([.key,.value] | join("=")) | join(",")')
-kubectl get pods -l=$sel -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}'
+kubectl get pods -l=$sel -o jsonpath='{range .items[*]}{.metadata.name}{"\n"}{end}'
 ```
 #### Update
 ```bash
@@ -88,7 +88,9 @@ kubectl get nodes -o jsonpath="{$.items[*].metadata.labels}"
 # Taint
 kubectl taint node <NODE_NAME> <LABEL_KEY>=LABEL_VALUE:NoSchedule   # taint node
 kubectl taint node <NODE_NAME> <LABEL_KEY>:NoSchedule-              # remove taint
-kubectl get node <NODE_NAME> -o jsonpath='{.spec.taints}'                 # get node taints
+kubectl get node <NODE_NAME> -o jsonpath='{.spec.taints}'           # get node taints
+## List nodes and taints
+kubectl get nodes -o jsonpath='{range .items[*]}{.metadata.name}{"\t"}{.spec.taints}{"\n"}{end}'
 
 
 # Drain and Uncordon
