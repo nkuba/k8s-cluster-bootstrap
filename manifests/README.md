@@ -105,13 +105,16 @@ GitHub:
 * [etcdctl](https://github.com/coreos/etcd/tree/master/etcdctl#etcdctl)
 
 ```bash
+export ETCDCTL_API=3
+
 ETCDCTL_API=3 etcdctl member list
 
-etcdctl ls
-etcdctl ls /registry
+ETCDCTL_API=3 etcdctl endpoint --cluster health
 
 ETCDCTL_API=3 etcdctl --endpoints <ENDPOINT> snapshot save snapshotdb
 ETCDCTL_API=3 etcdctl --write-out=table snapshot status snapshotdb
+
+ETCDCTL_API=3 etcdctl --endpoints=http://localhost:2379 get /registry --keys-only --prefix
 ```
 
 ### systemd
