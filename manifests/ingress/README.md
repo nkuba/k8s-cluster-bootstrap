@@ -13,6 +13,12 @@ Manages external access to the services in a cluster, typically HTTP.
 
 `kubectl replace -f ingress.yaml`
 
+Test ingress:
+```bash
+
+kubectl run curl --image=appropriate/curl
+kubectl exec -it <CURL_POD> -- curl -I -L --resolve nginx.kuba.pl:80:10.240.0.21 http://nginx.nkuba.io
+```
 ## Manifests
 
 [ingress.yaml](ingress.yaml)
@@ -29,11 +35,12 @@ spec:
         - backend:
             serviceName: ghost
             servicePort: 2368
-    - host: nginx.192.168.99.100.nip.io
+    - host: nginx.nkuba.io
       http:
         paths:
         - backend:
             serviceName: nginx
             servicePort: 80
 ```
+
 

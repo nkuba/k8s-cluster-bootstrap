@@ -10,29 +10,37 @@ You describe a desired state in a Deployment object, and the Deployment controll
 
 ## Kubectl commands
 
-`kubectl create --record -f  <FILE_PATH>`
+```bash
+kubectl create --record -f  <FILE_PATH>
 
-Append --record to this command to record the current command in the annotations of the created or updated resource.
+kubectl run <POD_NAME> --image=<IMAGE> --port=<PORT>
+```
+
+Append `--record` to command to record the current command in the annotations of the created or updated resource.
 
 ### Updating a Deployment
 
-`kubectl rollout status deployment/<DEPLOYMENT_NAME>`
+```bash
+kubectl rollout status deployment/<DEPLOYMENT_NAME>
 
-`kubectl set image deployment/<DEPLOYMENT_NAME> <CONTAINER_NAME>=<IMAGE_NAME>:<IMAGE_VERSION>`
+kubectl set image deployment/<DEPLOYMENT_NAME> <CONTAINER_NAME>=<IMAGE_NAME>:<IMAGE_VERSION>
 
-`kubectl edit deployment/<DEPLOYMENT_NAME>`
+kubectl edit deployment/<DEPLOYMENT_NAME>
 
-`kubectl set resources deployment nginx-deployment -c=nginx --limits=cpu=200m,memory=512Mi`
+kubectl set resources deployment nginx-deployment -c=nginx --limits=cpu=200m,memory=512Mi
+```
 
 ### Rolling Back a Deployment
 
-`kubectl rollout history deployment/<DEPLOYMENT_NAME>`
+```bash
+kubectl rollout history deployment/<DEPLOYMENT_NAME>
 
-`kubectl rollout history deployment/<DEPLOYMENT_NAME> --revision=<REVISION_NUMBER>`
+kubectl rollout history deployment/<DEPLOYMENT_NAME> --revision=<REVISION_NUMBER>
 
-`kubectl rollout undo deployment/<DEPLOYMENT_NAME>`
+kubectl rollout undo deployment/<DEPLOYMENT_NAME>
 
-`kubectl rollout undo deployment/<DEPLOYMENT_NAME> --to-revision=<REVISION_NUMBER>`
+kubectl rollout undo deployment/<DEPLOYMENT_NAME> --to-revision=<REVISION_NUMBER>
+```
 
 ### Scaling a Deployment
 

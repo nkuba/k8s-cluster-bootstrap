@@ -4,6 +4,7 @@ metadata:
   name: access-nginx
   namespace: default
 spec:
+  # Select pods to which the policy applies. If empty select all pods in the namespace
   podSelector:
     matchLabels:
       run: nginx
