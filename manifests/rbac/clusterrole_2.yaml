@@ -1,0 +1,9 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: cups-role
+  # "namespace" omitted since ClusterRoles are not namespaced
+rules:
+- apiGroups: ["jnowakowski.com"]
+  resources: ["cups"]
+  verbs: ["*"]

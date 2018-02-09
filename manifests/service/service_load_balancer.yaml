@@ -9,6 +9,6 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 9376
-  clusterIP: 10.0.171.239
+  clusterIP: 10.0.171.239     # if not provided will be generated
   loadBalancerIP: 78.11.24.19
   type: LoadBalancer

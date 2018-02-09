@@ -47,3 +47,42 @@ Sample manifest: [service_load_balancer.yaml](service_load_balancer.yaml)
 
 * **ExternalName** - Maps the service to the contents of the `externalName` field (e.g. _foo.bar.example.com_), by returning a _CNAME_ record with its value.
 [service_external_ip.yaml](service_external_ip.yaml)
+
+## Services without selectors
+[Documentation](https://kubernetes.io/docs/concepts/services-networking/service/#services-without-selectors)
+
+```bash
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+spec:
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 9376
+```
+
+```bash
+kind: Endpoints
+apiVersion: v1
+metadata:
+  name: my-service
+subsets:
+  - addresses:
+      - ip: 1.2.3.4
+    ports:
+      - port: 9376
+```
+
+### ExternalName service
+```bash
+kind: Service
+apiVersion: v1
+metadata:
+  name: my-service
+  namespace: prod
+spec:
+  type: ExternalName
+  externalName: my.database.example.com
+```

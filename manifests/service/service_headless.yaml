@@ -1,0 +1,19 @@
+# https://kubernetes.io/docs/concepts/services-networking/service/#headless-services
+# https://akomljen.com/stateful-applications-kubernetes/
+apiVersion: v1
+kind: Service
+metadata:
+  name: zookeeper-server
+  labels:
+    app: zookeeper
+spec:
+  clusterIP: None # set "None" for headless service
+  ports:
+  - port: 2888
+    name: server
+  - port: 3888
+    name: leader-election
+  # if selector is provided Endpoints will be created
+  # if selector is NOT provided Endpoints will NOT be created - https://kubernetes.io/docs/concepts/services-networking/service/#services-without-selectors
+  selector:
+    app: zookeeper
